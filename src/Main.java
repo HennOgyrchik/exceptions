@@ -1,183 +1,126 @@
-import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 
 public class Main {
     public static void main(String[] args) {
-       /* int[] arr={1,2,3,4,5,6,7,8,9};
-
-        codeInfo(func_1(arr,50,9));
-        codeInfo(func_1(arr,3,52));
-        codeInfo(func_1(null,7,9));
-        codeInfo(func_1(arr,3,9));
-        */
-
-       /* int[][] arr2={{1,0,1},{1,1,1},{0,1,0}};
-        System.out.println(func_2(arr2));
-        */
-
-       /* Integer[] arr={1,null,3,4,null,2};
-        checkArray(arr);*/
-
-       /* int[] a = {10, 14, -6};
-        int[] b = {5, 7, -2};
-
-        for (int x :
-                divArrays(a, b)) {
-            System.out.print(x+" ");
+       //task1();
+       // task2();
+       // task3();
+      /*  try {
+            nullArray();
+        }catch (EmptyArrayException e){
+            System.out.println("asdasd!!ASD!");
         }*/
 
-        String fileName="file.txt";
-        List<String[]> arr= readFile(fileName);
-        channgeList(arr);
-        updateFile(arr, fileName);
+/*
+        try {
+            tryFile();
+        }catch (CantFindFileException e){
+            System.out.println(e.getMessage());
+        }*/
+        String arr[][]={{"1","2","3","4"},{"1","2","3","4"},{"1","2","3","4"},{"1","2","3","4"}};
+
+        try {
+            System.out.println(task4(arr));
+
+        }catch (MyArrayDataException | MyArraySizeException e){
+            System.out.println(e.getMessage());
+        }
+
     }
 
-    public static int func_1(int[] arr, int a, int find){
-        if (arr == null){
-            return -3;
+    public static void doSomething() throws Exception {
+        throw new Exception("Something exeption");
+    }
+
+    public static void task1(){
+        try {
+            doSomething();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
         }
-        if (arr.length<a) {
-            return -1;
+    }
+
+     public static void task2(){
+        try (Counter c = new Counter()) {
+            c.add();
+            System.out.println(c.getCount());
+            c.close();
+            c.add();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
         }
-        for (int i=0;i<arr.length;i++){
-            if (arr[i]==find){
-                return i;
+
+    }
+
+    public static void task3(){
+        try {
+            zeroDevider();
+        } catch (DevZero e){
+            System.out.println(e.getMessage());
+        }
+    }
+    public static void zeroDevider() {
+        throw new DevZero("~ada!!");
+    }
+
+    public static void nullArray(){
+        Integer[] arr = {0,null,4};
+        try {
+            for (int i = 0; i < arr.length; i++) {
+                arr[i]++;
+                System.out.println(arr[i]);
+            }
+        }catch (NullPointerException e){
+            throw new EmptyArrayException();
+        }
+    }
+
+    public static  void tryFile() throws CantFindFileException{
+        try (FileReader fr = new FileReader("asd")) {
+            fr.read();
+        } catch (FileNotFoundException e) {
+            throw new CantFindFileException("asdas~afaS!");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+/*
+Напишите метод,на вход которогоподаётся двумерный строковый массив
+размером 4х4. При подаче массива другого размера необходимо бросить
+исключение MyArraySizeException.
+2. Далее метод должен пройтисьпо всем элементам массива,преобразовать в
+int и просуммировать. Если в каком-то элементе массива преобразование
+не удалось (например, в ячейке лежит символ или текст вместо числа),
+должно быть брошено исключение MyArrayDataException с детализацией, в
+какой именно ячейкележат неверныеданные.
+3. В методе main() вызвать полученный метод, обработать возможные
+исключения MyArraySizeException и MyArrayDataException и вывести
+результатрасчета (сумму элементов,при условиичто подали на вход
+корректныймассив).
+ */
+    public static int task4(String[][] arr) throws MyArraySizeException, MyArrayDataException{
+        for (int i = 0; i < 4; i++) {
+            if (arr.length!=4 || arr[i].length!=4){
+                throw new MyArraySizeException("not 4x4!!!! this array "+arr.length + "x"+arr[i].length);
             }
         }
 
-        return -2;
-    }
 
-    public static void codeInfo(int code){
-        switch (code) {
-            case -1 ->
-                System.out.println("Длинна массива меньше некоторого заданного минимума.");
-
-            case -2 ->
-                System.out.println("Искомый элемент не найден.");
-
-            case -3 ->
-                System.out.println("Массив null.");
-
-            default -> System.out.println("Искомый элемент имеет индекс " + code);
-        }
-    }
-
-    public static int func_2(int[][] arr){
-        if (arr.length !=arr[0].length){
-            throw new RuntimeException("Массив не является квадратным!");
-        }
         int sum=0;
-        for (int[] is: arr) {
-            for (int is2: is) {
-                if ((is2!=0)&&(is2!=1)){
-                    throw new RuntimeException("Элемент массива не является 0 или 1!");
+        for (int i = 0; i < arr.length; i++) {
+            for (int j = 0; j < arr[i].length; j++) {
+                try {
+                    int x = Integer.parseInt(arr[i][j]);
+                    sum+=x;
+                }catch (NumberFormatException e){
+                    throw new MyArrayDataException("Invalid data in ["+i+";"+j+"]");
                 }
-                sum+=is2;
             }
         }
 
         return sum;
-    }
-
-    public static void checkArray(Integer[] arr){
-        StringBuilder res=new StringBuilder();
-        for (int i = 0; i < arr.length; i++) {
-            if (arr[i]==null){
-                res.append(i).append(" ");
-            }
-        }
-        if (!res.isEmpty()){
-            throw new RuntimeException("Элементы NULL: "+res);
-        }
-        System.out.println("Элементы NULL не найдены.");
-    }
-
-    public static int[] subArrays(int[] a, int[] b){
-        // Введите свое решение ниже
-        if (a.length!=b.length) {
-            return new int[]{0};
-        }
-        int[] c= new int[a.length];
-        for (int i = 0; i < c.length; i++) {
-            c[i]=a[i]-b[i];
-        }
-        return c;
-    }
-
-    public static int[] divArrays(int[] a, int[] b){
-        // Введите свое решение ниже
-
-        if (a.length!=b.length) {
-            return new int[]{0};
-        }
-        int[] c= new int[a.length];
-        for (int i = 0; i < c.length; i++) {
-            if (b[i]!=0){
-                c[i]=a[i]/b[i];
-            } else {
-                throw new RuntimeException("На 0 делить нельзя :c");
-            }
-
-        }
-        return c;
-    }
-
-    public static List<String[]> readFile(String fileName){
-        List<String[]> result = new ArrayList<>();
-        try {
-            BufferedReader file = new BufferedReader(new FileReader(fileName));
-            String line = "";
-            while ((line = file.readLine()) != null){
-                result.add(checkSymbol(line.split("=")));
-            }
-
-        }
-        catch (FileNotFoundException e) {
-            System.out.println("Файл не найден!");
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
-        }
-
-
-        return result;
-    }
-
-    public static String[] checkSymbol(String[] arr){
-        if (!isNumeric(arr[1]) && !arr[1].equals("?")){
-            throw new RuntimeException("Некорректные данные: "+ arr[0]+"="+arr[1]);
-        }
-        return arr;
-    }
-
-    public static boolean isNumeric (String str){
-        try {
-            Integer.parseInt(str);
-            return true;
-        }
-        catch (NumberFormatException e){
-            return false;
-        }
-    }
-
-    public static void channgeList(List<String[]> list){
-        for (String[] line: list) {
-            if (line[1].equals("?")){
-                line[1]=String.valueOf(line[0].length());
-            }
-        }
-    }
-
-    public static void updateFile(List<String[]> data, String fileName){
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
-            for (String[] line : data) {
-                writer.write(String.join("=", line[0], line[1]));
-                writer.newLine();
-            }
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
-        }
     }
 }
