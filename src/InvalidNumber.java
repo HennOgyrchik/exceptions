@@ -1,2 +1,5 @@
-package PACKAGE_NAME;public class InvalidNumber {
+public class InvalidNumber extends RuntimeException{
+    public InvalidNumber(){
+        super("Неверный формат номера телефона!");
+    }
 }
